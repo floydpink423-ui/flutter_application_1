@@ -25,7 +25,6 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-  use_modular_headers!
 
   # 🔥 FORZAR VERSION COMPATIBLE DE gRPC
   pod 'gRPC-Core', '1.62.0'
