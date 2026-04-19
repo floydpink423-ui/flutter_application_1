@@ -13,14 +13,15 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
+  # Utilidades
   shared_preferences: ^2.2.2
   http: ^1.1.0
   path_provider: ^2.1.2
   excel: ^2.1.0
 
+  # Firebase (SIN Firestore por ahora)
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.4
-  cloud_firestore: ^4.15.5   # 👈 ACTIVADO (ESTE ERA EL PROBLEMA)
 
 dev_dependencies:
   flutter_test:
