@@ -18,9 +18,9 @@ dependencies:
   path_provider: ^2.1.2
   excel: ^2.1.0
 
-  firebase_core: ^2.32.0
-  firebase_auth: ^4.20.0
-  cloud_firestore: ^4.17.5   # 👈 ACTIVADO (ESTE ERA EL PROBLEMA)
+  firebase_core: ^2.25.4
+  firebase_auth: ^4.17.4
+  cloud_firestore: ^4.15.5   # 👈 ACTIVADO (ESTE ERA EL PROBLEMA)
 
 dev_dependencies:
   flutter_test:
