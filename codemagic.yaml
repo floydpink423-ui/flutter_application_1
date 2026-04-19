@@ -3,7 +3,7 @@ workflows:
     name: iOS Build
     environment:
       flutter: stable
-      xcode: latest
+      xcode: 15.4   # 👈 CLAVE
 
     scripts:
       - name: Clean project
