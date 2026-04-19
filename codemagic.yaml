@@ -4,12 +4,19 @@ workflows:
     environment:
       flutter: stable
       xcode: latest
+
     scripts:
-      - name: Install dependencies
-        script: flutter pub get
+      - name: Clean project
+        script: |
+          flutter clean
+          flutter pub get
+
+      - name: Update CocoaPods
+        script: |
+          pod repo update
 
       - name: Build iOS (simulator)
         script: flutter build ios --simulator
 
     artifacts:
-      - build/ios/iphoneos/*.app
+      - build/ios/iphonesimulator/*.app
