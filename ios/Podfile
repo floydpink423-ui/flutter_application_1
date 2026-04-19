@@ -26,9 +26,12 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
 
-  # 🔥 SOLO Firebase usa modular headers (NO global)
+  # 🔥 Firebase modular headers (completo)
   pod 'FirebaseCore', :modular_headers => true
   pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'FirebaseCoreExtension', :modular_headers => true
+  pod 'FirebaseFirestore', :modular_headers => true
+  pod 'FirebaseFirestoreInternal', :modular_headers => true
   pod 'GoogleUtilities', :modular_headers => true
 
   # 🔥 gRPC fijo
