@@ -26,7 +26,12 @@ flutter_ios_podfile_setup
 
 target 'Runner' do
 
-  # 🔥 FORZAR VERSION COMPATIBLE DE gRPC
+  # 🔥 SOLO Firebase usa modular headers (NO global)
+  pod 'FirebaseCore', :modular_headers => true
+  pod 'FirebaseCoreInternal', :modular_headers => true
+  pod 'GoogleUtilities', :modular_headers => true
+
+  # 🔥 gRPC fijo
   pod 'gRPC-Core', '1.62.0'
   pod 'gRPC-C++', '1.62.0'
 
