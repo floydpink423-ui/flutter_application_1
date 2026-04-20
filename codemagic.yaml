@@ -19,10 +19,6 @@ workflows:
           pod install --repo-update
           cd ..
 
-      - name: Fix gRPC build issue
-        script: |
-          find ios/Pods/gRPC-Core -name "*.h" -type f -exec sed -i '' 's/template/template_disabled/g' {} +
-
       - name: Build iOS (simulator)
         script: flutter build ios --simulator
 
