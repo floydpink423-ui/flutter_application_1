@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AdminPage()),
+                  MaterialPageRoute(builder: (_) => AdminPage()),
                 );
               },
               child: const Text('Ir a Admin'),
