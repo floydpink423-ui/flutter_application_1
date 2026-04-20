@@ -25,9 +25,8 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 flutter_ios_podfile_setup
 
 target 'Runner' do
-
-  # 🔥 SOLO lo necesario para Firebase
-  pod 'GoogleUtilities', :modular_headers => true
+  # 🔥 ESTA ES LA CLAVE
+  use_frameworks! :linkage => :dynamic
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
