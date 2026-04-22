@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -50,14 +49,11 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset('assets/logo.png', height: 80),
-
             SizedBox(height: 10),
-
             Text(
               "SERMNE",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-
             Text(
               "Gerencia de Mantenimiento, Confiabilidad y Construcción",
               textAlign: TextAlign.center,
@@ -69,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
               style: TextStyle(fontSize: 12),
             ),
             SizedBox(height: 30),
-
             TextField(
               controller: userController,
               decoration: InputDecoration(
@@ -77,9 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             SizedBox(height: 15),
-
             TextField(
               controller: passController,
               obscureText: true,
@@ -88,13 +81,9 @@ class _LoginPageState extends State<LoginPage> {
                 border: OutlineInputBorder(),
               ),
             ),
-
             SizedBox(height: 20),
-
             ElevatedButton(onPressed: login, child: Text("Ingresar")),
-
             SizedBox(height: 10),
-
             Text(error, style: TextStyle(color: Colors.red)),
           ],
         ),
