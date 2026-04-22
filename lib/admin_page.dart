@@ -98,7 +98,7 @@ class _AdminPageState extends State<AdminPage> {
                     decoration: const InputDecoration(labelText: "Password"),
                   ),
                   DropdownButtonFormField<String>(
-                    value: rolSeleccionado,
+                    initialValue: rolSeleccionado,
                     items: roles
                         .map((r) => DropdownMenuItem(
                               value: r,
@@ -140,7 +140,7 @@ class _AdminPageState extends State<AdminPage> {
 
                 return ListView(
                   children: snapshot.data!.docs.map((doc) {
-                    final data = doc.data() as Map<String, dynamic>;
+                    final data = doc.data();
                     final uid = doc.id;
 
                     String rolActual = data["rol"] ?? "consultor";

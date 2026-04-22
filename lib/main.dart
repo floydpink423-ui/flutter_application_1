@@ -1,4 +1,5 @@
 // ================= MAIN FINAL CORREGIDO =================
+// actualizado al 22 de abril de 2026
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -173,21 +174,22 @@ class DashboardPage extends StatelessWidget {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection("ductos").snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
+        if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
+        }
 
         int bajo = 0, medio = 0, alto = 0;
         Map<String, int> fluidos = {};
 
         for (var doc in snapshot.data!.docs) {
-          var d = doc.data() as Map<String, dynamic>;
+          var d = doc.data();
 
           var r = getCampo(d, "NIVEL_DE_RIESGO");
           var f = getCampo(d, "FLUIDO_PRINCIPAL");
 
-          if (r == "3")
+          if (r == "3") {
             alto++;
-          else if (r == "2")
+          } else if (r == "2")
             medio++;
           else
             bajo++;
@@ -275,18 +277,19 @@ class _ListaDuctosState extends State<ListaDuctos> {
           child: StreamBuilder(
             stream: FirebaseFirestore.instance.collection("ductos").snapshots(),
             builder: (context, snapshot) {
-              if (!snapshot.hasData)
+              if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
+              }
 
               final docs = snapshot.data!.docs.where((d) {
-                final data = d.data() as Map<String, dynamic>;
+                final data = d.data();
                 return data.values
                     .any((v) => v.toString().toLowerCase().contains(search));
               }).toList();
 
               return ListView(
                 children: docs.map((d) {
-                  final data = d.data() as Map<String, dynamic>;
+                  final data = d.data();
                   final color = getColor(getCampo(data, "NIVEL_DE_RIESGO"));
 
                   return Card(
