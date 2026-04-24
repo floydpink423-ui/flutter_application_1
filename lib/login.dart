@@ -1,90 +1,175 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+// 👇 IMPORTANTE: acceso a ListaDuctos
+import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  TextEditingController userController = TextEditingController();
-  TextEditingController passController = TextEditingController();
+  final emailCtrl = TextEditingController();
+  final passCtrl = TextEditingController();
 
   String error = "";
-
-  final usuarios = {
-    "admin": {"pass": "1234", "rol": "admin"},
-    "ductos": {"pass": "1234", "rol": "user"},
-  };
+  bool loading = false;
 
   Future<void> login() async {
-    String user = userController.text.trim();
-    String pass = passController.text.trim();
+    setState(() {
+      loading = true;
+      error = "";
+    });
 
-    if (usuarios.containsKey(user) && usuarios[user]!["pass"] == pass) {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool("logged", true);
-      await prefs.setString("rol", usuarios[user]!["rol"].toString());
+    try {
+      final cred = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailCtrl.text.trim(),
+        password: passCtrl.text.trim(),
+      );
+
+      final doc = await FirebaseFirestore.instance
+          .collection("usuarios")
+          .doc(cred.user!.uid)
+          .get();
+
+      final rol = doc.data()?["rol"] ?? "consultor";
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => PantallaDucto()),
+        MaterialPageRoute(
+          builder: (_) => ListaDuctos(rol: rol),
+        ),
       );
-    } else {
+    } catch (e) {
       setState(() {
-        error = "Credenciales incorrectas";
+        error = "Correo o contraseña incorrectos";
       });
+    } finally {
+      setState(() => loading = false);
     }
+  }
+
+  void recuperarPassword() {
+    final emailResetCtrl = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Recuperar contraseña"),
+        content: TextField(
+          controller: emailResetCtrl,
+          keyboardType: TextInputType.emailAddress,
+          decoration: const InputDecoration(
+            labelText: "Ingresa tu correo",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancelar"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (emailResetCtrl.text.isEmpty) return;
+
+              try {
+                await FirebaseAuth.instance.sendPasswordResetEmail(
+                  email: emailResetCtrl.text.trim(),
+                );
+
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text("Correo de recuperación enviado"),
+                  ),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error: $e")),
+                );
+              }
+            },
+            child: const Text("Enviar"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.all(25),
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/logo.png', height: 80),
-            SizedBox(height: 10),
-            Text(
-              "SERMNE",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Gerencia de Mantenimiento, Confiabilidad y Construcción",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12),
-            ),
-            Text(
-              "Coordinación de Ingeniería de Rendimiento de Equipos",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12),
-            ),
-            SizedBox(height: 30),
-            TextField(
-              controller: userController,
-              decoration: InputDecoration(
-                labelText: "Usuario",
-                border: OutlineInputBorder(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 40),
+                      Image.asset('assets/logo.png', height: 80),
+                      const SizedBox(height: 20),
+                      const Text(
+                        "SERMNE",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      TextField(
+                        controller: emailCtrl,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: const InputDecoration(labelText: "Correo"),
+                      ),
+                      const SizedBox(height: 15),
+                      TextField(
+                        controller: passCtrl,
+                        obscureText: true,
+                        decoration:
+                            const InputDecoration(labelText: "Contraseña"),
+                      ),
+                      const SizedBox(height: 25),
+                      ElevatedButton(
+                        onPressed: loading ? null : login,
+                        child: loading
+                            ? const CircularProgressIndicator(
+                                color: Colors.white)
+                            : const Text("Ingresar"),
+                      ),
+                      const SizedBox(height: 10),
+                      if (error.isNotEmpty)
+                        Text(
+                          error,
+                          style: const TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 15),
-            TextField(
-              controller: passController,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: "Contraseña",
-                border: OutlineInputBorder(),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: TextButton(
+                onPressed: recuperarPassword,
+                child: const Text(
+                  "¿Olvidaste tu contraseña?",
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                  ),
+                ),
               ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(onPressed: login, child: Text("Ingresar")),
-            SizedBox(height: 10),
-            Text(error, style: TextStyle(color: Colors.red)),
           ],
         ),
       ),
